@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<maraton edicion="15" nombre="Maratón Internacional Ciudad Galileo">
+    <informacion_general>
+        <fecha>2026-11-15</fecha>
+        <ciudad>Valladolid</ciudad>
+        <distancia unidad="km">42.195</distancia>
+    </informacion_general>
+    <participantes>
+        <corredor categoria="Popular" dorsal="101">
+            <nombre>Carlos</nombre>
+            <apellidos>Gómez Ruiz</apellidos>
+            <edad>29</edad>
+            <pais>España</pais>
+            <tiempo_final>03:14:35</tiempo_final>
+        </corredor>
+    </participantes>
+</maraton>
