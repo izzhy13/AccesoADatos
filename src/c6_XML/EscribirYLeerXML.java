@@ -54,7 +54,7 @@ public class EscribirYLeerXML {
 	    	participantes.appendChild(corredor);
 	    	
 		    	Element nombre = documento.createElement("nombre");
-		    	nombre.setTextContent("Carlos");
+		    	nombre.setTextContent("Carlos"); //esto seria con clases y un objeto corredor y getname
 		    	corredor.appendChild(nombre);
 		    	
 		    	Element apellidos = documento.createElement("apellidos");
@@ -73,7 +73,10 @@ public class EscribirYLeerXML {
 		    	tiempoFinal.setTextContent("03:14:35");
 		    	corredor.appendChild(tiempoFinal);
 		    	
-		    
+		    corredor = documento.createElement("corredor");
+		    corredor.setAttribute("dorsal", "101");
+		    corredor.setAttribute("categoria", "Popular");
+		    participantes.appendChild(corredor);
 	    
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
