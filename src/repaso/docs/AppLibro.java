@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,8 +12,39 @@ import java.util.stream.Collectors;
 
 public class AppLibro {
 	
-	//public void 
+	public static void eliminarLibrosAntiguos(List <Libro> libros, int anioLimite) {
+		for (Libro l : libros) {
+			if (l.getAnio_publi() < anioLimite) { 
+				libros.remove(l); //esto MAL: lanzara el CurrentModificationException
+				} 
+		} 
+	}
+	
+	public static void eliminarConIterator(List<Libro> libros, int anioLimite) {
+	    Iterator<Libro> it = libros.iterator();
+	    while (it.hasNext()) { // Mientras queden libros en la "bandeja"
+	        Libro l = it.next(); // Cogemos el siguiente libro
+	        if (l.getAnio_publi() < anioLimite) {
+	            it.remove(); // ¡Borrado seguro usando el iterador, no la lista!
+	        }
+	    }
+	}
+	
+	public static void eliminarConRemoveIf(List<Libro> libros, int anioLimite) {
+		libros.removeIf(l -> l.getAnio_publi() < anioLimite); //lambdas
+	}
+	
+	public static void eliminarConStream(List<Libro> libros, int anioLimite) {
+	    // Filtramos y guardamos los que SÍ queremos conservar en una nueva lista
+	    List<Libro> librosValidos = libros.stream()
+	            .filter(l -> l.getAnio_publi() >= anioLimite) // Nos quedamos con los >= al límite
+	            .toList();
 
+	    libros.clear(); // Vaciamos la lista original
+	    libros.addAll(librosValidos); //  Volvemos a meter solo los válidos
+
+	}
+	
 	public static void main(String[] args) {
 		Libro l1 = new Libro("Elantris","Brandon Sanderson","123456789ABCD",LocalDate.of(2011, 7, 1));
 		Libro l2 = new Libro("Acotar","Sarah J Mass","123456789ABCD",LocalDate.of(2018, 5, 12));
