@@ -7,14 +7,14 @@ public class Libro {
 	private int anio_publicacion;
 
 
-	public Libro(String nombre, String autor, String editorial, int anio_publicacion) {
-		this.titulo = nombre;
+	public Libro(String titulo, String autor, String editorial, int anio_publicacion) {
+		this.titulo = titulo;
 		this.autor = autor;
 		this.editorial = editorial;
 		this.anio_publicacion = anio_publicacion;
 	}
 
-	public String getNombre() {
+	public String getTitulo() {
 		return titulo;
 	}
 

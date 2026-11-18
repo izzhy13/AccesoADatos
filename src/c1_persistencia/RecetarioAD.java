@@ -24,6 +24,7 @@ public class RecetarioAD {
 		try (BufferedReader br = new BufferedReader(
 				new InputStreamReader(
 						new FileInputStream(fichero), StandardCharsets.UTF_8))) {
+
 			String linea;
 			while ((linea = br.readLine()) != null) {
 				System.out.println(linea);
@@ -43,27 +44,29 @@ public class RecetarioAD {
 		}
 	}
 
-	// 3. Lo mismo con NIO (UTF-8 por defecto)
+	// 3. Lo mismo con NIO (UTF-8 por defecto) !!!
 	static void leerLineasNio(Path ruta) throws IOException {
-		try (BufferedReader br = Files.newBufferedReader(ruta)) {
+		try (BufferedReader br = Files.newBufferedReader(ruta, StandardCharsets.UTF_8)) {
 			String linea;
 			while ((linea = br.readLine()) != null) {
 				System.out.println(linea);
 			}
 			// Con lambdas (Java 8): br.lines().forEach(System.out::println);
+
 		}
 	}
+	// CUÁNDO USARLO: Ficheros de texto línea a línea (.txt, .csv, .properties) asegurando UTF-8.
 
-	// 4. Leer un fichero de texto entero (NIO). Solo si cabe en memoria.
+	// 4. Leer un fichero de texto entero (NIO). Solo si cabe en memoria. FICHEROS PEQUEÑOS
 	//    Java 25: new FileReader(f, UTF_8).readAllAsString() hace lo mismo
 	static String leerTodo(Path ruta) throws IOException {
-		return Files.readString(ruta);
-	}
+		return Files.readString(ruta); //devuelve un unico string, readAllLines devuelve una list<String>
+	} //se podria añadir el StandardCharsets.UTF_8 pero java asume utf-8 auto.
 
-	// 5. Recorrer un fichero grande sin cargarlo entero en memoria
+	// 5. Recorrer un fichero GRANDE sin cargarlo entero en memoria
 	static long contarLineasCon(Path ruta, String texto) throws IOException {
 		long n = 0;
-		try (BufferedReader br = Files.newBufferedReader(ruta)) {
+		try (BufferedReader br = Files.newBufferedReader(ruta, StandardCharsets.UTF_8)) {
 			String linea;
 			while ((linea = br.readLine()) != null) {
 				if (linea.contains(texto)) {
@@ -93,9 +96,9 @@ public class RecetarioAD {
 		}   // close() hace flush: sin el, el fichero queda vacio
 	}
 
-	// 7. Lo mismo con NIO por debajo
+	// 7. Lo mismo con NIO por debajo !!!
 	static void escribirCsvNio(Path ruta, List<String> lineas) throws IOException {
-		try (PrintWriter pw = new PrintWriter(Files.newBufferedWriter(ruta))) {
+		try (PrintWriter pw = new PrintWriter(Files.newBufferedWriter(ruta, StandardCharsets.UTF_8))) {
 			for (String linea : lineas) {
 				pw.println(linea);
 			}
@@ -111,15 +114,15 @@ public class RecetarioAD {
 		}
 	}
 
-	// 9. Anadir al final con NIO (creando el fichero si no existe)
+	// 9. Anadir al final con NIO (creando el fichero si no existe) !!!
 	static void anadirLineaNio(Path ruta, String linea) throws IOException {
-		Files.writeString(ruta, linea + System.lineSeparator(),
+		Files.writeString(ruta, linea + System.lineSeparator(), //StandardCharsets.UTF_8,
 				StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 	}
 
 	// 10. Leer un fichero que NO es UTF-8 (CSV antiguo de Windows, etc.)
 	static List<String> leerLatin1(Path ruta) throws IOException {
-		return Files.readAllLines(ruta, StandardCharsets.ISO_8859_1);
+		return Files.readAllLines(ruta, StandardCharsets.ISO_8859_1); //devuelve un list<String>
 	}
 
 	// =================================================================
@@ -170,26 +173,26 @@ public class RecetarioAD {
 		}
 	}
 
-	// 16. Guardar objetos: la lista entera de una vez (no se puede anadir)
-	record Alumno(String nombre, int nota) implements Serializable {}
-
-	static void guardarObjetos(String fichero, List<Alumno> alumnos)
-			throws IOException {
-		try (ObjectOutputStream oos = new ObjectOutputStream(
-				new BufferedOutputStream(new FileOutputStream(fichero)))) {
-			oos.writeObject(new ArrayList<>(alumnos));
-		}
-	}
-
-	// 17. Leer objetos
-	@SuppressWarnings("unchecked")
-	static List<Alumno> leerObjetos(String fichero)
-			throws IOException, ClassNotFoundException {
-		try (ObjectInputStream ois = new ObjectInputStream(
-				new BufferedInputStream(new FileInputStream(fichero)))) {
-			return (List<Alumno>) ois.readObject();
-		}
-	}
+//	// 16. Guardar objetos: la lista entera de una vez (no se puede anadir)
+//	record Alumno(String nombre, int nota) implements Serializable {}
+//
+//	static void guardarObjetos(String fichero, List<Alumno> alumnos)
+//			throws IOException {
+//		try (ObjectOutputStream oos = new ObjectOutputStream(
+//				new BufferedOutputStream(new FileOutputStream(fichero)))) {
+//			oos.writeObject(new ArrayList<>(alumnos));
+//		}
+//	}
+//
+//	// 17. Leer objetos
+//	@SuppressWarnings("unchecked")
+//	static List<Alumno> leerObjetos(String fichero)
+//			throws IOException, ClassNotFoundException {
+//		try (ObjectInputStream ois = new ObjectInputStream(
+//				new BufferedInputStream(new FileInputStream(fichero)))) {
+//			return (List<Alumno>) ois.readObject();
+//		}
+//	}
 
 	// 18. Acceso directo: registro n de tamano fijo (aqui, un int = 4 bytes)
 	static int leerRegistro(String fichero, int n) throws IOException {
@@ -307,8 +310,8 @@ public class RecetarioAD {
 		System.out.println("registro 2: " + leerRegistro(bin, 2));
 
 		String obj = dir.resolve("alumnos.dat").toString();
-		guardarObjetos(obj, List.of(new Alumno("Ana", 8), new Alumno("Luis", 6)));
-		System.out.println(leerObjetos(obj));
+		//guardarObjetos(obj, List.of(new Alumno("Ana", 8), new Alumno("Luis", 6)));
+		//System.out.println(leerObjetos(obj));
 
 		System.out.println(leerInputStream(new FileInputStream(txt)));
 		System.out.print(capturarTexto());
